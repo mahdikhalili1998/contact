@@ -1,49 +1,57 @@
 import React, { useState } from "react";
+import inputs from "../constant info/input";
 
 function Input() {
+  const [alert, setAlert] = useState("");
+
   const [selected, setSelected] = useState({
     name: "",
     lastname: "",
     phone: "",
     email: "",
   });
+
+  const [contact, setContact] = useState([]);
+
   const changeHandler = (event) => {
     const value = event.target.value;
     const name = event.target.name;
-    console.log({ name, value });
-    setSelected(selected=>)
+    setSelected((selected) => ({ ...selected, [name]: value }));
   };
+
+  const saveHandler = () => {
+    if (
+      !selected.name ||
+      !selected.lastname ||
+      !selected.email ||
+      !selected.phone
+    ) {
+      setAlert("please enter valid data");
+      return;
+    }
+    setAlert("");
+    setContact((contact) => [...contact, selected]);
+    console.log(contact);
+    setSelected({ name: "", lastname: "", phone: "", email: "" });
+  };
+
   return (
-    <div>
-      <input
-        placeholder="name"
-        type="text"
-        onChange={changeHandler}
-        name="name"
-        value={selected.name}
-      />
-      <input
-        placeholder="last name"
-        type="text"
-        onChange={changeHandler}
-        name="lastname"
-        value={selected.lastname}
-      />
-      <input
-        placeholder="email"
-        type="email"
-        onChange={changeHandler}
-        name="email"
-        value={selected.email}
-      />
-      <input
-        placeholder="phone number"
-        type="number"
-        onChange={changeHandler}
-        name="phone"
-        value={selected.phone}
-      />
-    </div>
+    <>
+      <div>
+        {inputs.map((item, index) => (
+          <input
+            key={index}
+            type={item.type}
+            placeholder={item.placeholder}
+            name={item.name}
+            value={selected[item.name]}
+            onChange={changeHandler}
+          />
+        ))}
+        <button onClick={saveHandler}>Save contact</button>
+      </div>
+      <div>{alert && <p>{alert}</p>}</div>
+    </>
   );
 }
 
