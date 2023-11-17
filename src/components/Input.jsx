@@ -5,10 +5,7 @@ import styles from "./input.module.css";
 import { v4 } from "uuid";
 
 function Input() {
-  // const people = JSON.parse(localStorage.getItem("data")) || contact;
-
   const [alert, setAlert] = useState("");
-
   const [selected, setSelected] = useState({
     id: "",
     name: "",
@@ -16,8 +13,11 @@ function Input() {
     phone: "",
   });
 
-  const [contact, setContact] = useState([]);
+  const [contact, setContact] = useState(
+    JSON.parse(localStorage.getItem("data")) || []
+  );
 
+  // console.log(contact);
   const changeHandler = (event) => {
     const value = event.target.value;
     const name = event.target.name;
@@ -27,40 +27,32 @@ function Input() {
   const deleteHandler = (id) => {
     const afterdelet = contact.filter((item) => item.id !== id);
     setContact(afterdelet);
-    saveToLocal();
+    localStorage.setItem("data", JSON.stringify(afterdelet));
   };
 
-  const showDisplay = () => {
-    const toArry = [];
-    toArry.push(selected);
-    console.log(toArry);
-    // const mapselected = toArry.map((item) => {
-    //   console.log(item);
-    //   const newData = {
-    //     name: item.name,
-    //     lastname: item.lastname,
-    //     phone: item.phone,
-    //     id: v4(),
-    //   };
-    //   return;
-    // });
+  const saveToLocal = (contact) => {
+    console.log(contact);
+    localStorage.setItem("data", JSON.stringify(contact));
   };
+  saveToLocal(contact);
+
   const saveHandler = () => {
     if (!selected.name || !selected.lastname || !selected.phone) {
-      setAlert("please enter valid data");
+      setAlert("Please enter valid data");
       return;
     }
     setAlert("");
     const idGenerator = { ...selected, id: v4() };
-    showDisplay();
     setContact((contact) => [...contact, idGenerator]);
     setSelected({ name: "", lastname: "", phone: "" });
+    // console.log(contact);
   };
 
   return (
     <div className={styles.container}>
       {inputs.map((item, index) => (
         <input
+          className={styles.input}
           key={index}
           type={item.type}
           placeholder={item.placeholder}
@@ -69,11 +61,12 @@ function Input() {
           onChange={changeHandler}
         />
       ))}
+
       <button className={styles.button} onClick={saveHandler}>
         Save contact
       </button>
 
-      <div>{alert && <p>{alert}</p>}</div>
+      <div className={styles.alert} >{alert && <p>{alert}</p>}</div>
       <ContactList info={contact} deleteHandler={deleteHandler} />
     </div>
   );

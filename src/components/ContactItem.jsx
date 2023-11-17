@@ -1,16 +1,24 @@
 import { useState } from "react";
-
-function ContactItem({ data, deleteHandler,  }) {
+import styles from "./item.module.css";
+function ContactItem({ data, deleteHandler }) {
   return (
     <>
-      <ul>
+      <ul className={styles.ul}>
         {data.map((item) => (
-          <li key={item.id}>
-            <p>{item.name}</p>
-            <p>{item.lastname}</p>
+          <li key={item.id} className={styles.li}>
+            <p className="">{`${item.name}    ${item.lastname} `}</p>
+
             <p>{item.phone}</p>
-            <p>{item.id}</p>
-            <button onClick={() => deleteHandler(item.id)}>deleted</button>
+
+            <button
+              className={styles.button}
+              onClick={() => deleteHandler(item.id)}
+            >
+              deleted
+              <span className={styles.icon}>
+                <ion-icon name="trash"></ion-icon>
+              </span>
+            </button>
           </li>
         ))}
       </ul>
